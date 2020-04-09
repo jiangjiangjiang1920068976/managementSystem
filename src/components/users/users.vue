@@ -34,12 +34,12 @@
         </el-table-column>
         <el-table-column label="操作" width='180px'>
           <template slot-scope='scope'>
-  <el-button type="primary" icon="el-icon-edit" size="mini" @click="editDialog(scope.row.id)"></el-button>
-  <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeDialog(scope.row.id)"></el-button>
-  <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
-    <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
-  </el-tooltip>
-</template>
+           <el-button type="primary" icon="el-icon-edit" size="mini" @click="editDialog(scope.row.id)"></el-button>
+           <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeDialog(scope.row.id)"></el-button>
+           <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
+             <el-button type="warning" icon="el-icon-setting" size="mini" @click='assignRoles(scope.row)'></el-button>
+           </el-tooltip>
+          </template>
         </el-table-column>
       </el-table>
       <!-- 分页 -->
@@ -90,6 +90,23 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="editUser">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 点击分配权限弹出对话框 -->
+    <el-dialog title="分配角色" :visible.sync="usersFpqx" width="50%" @close='closeUserFpjs'>
+      <div>
+        <p>当前的用户：{{usersInfo.username}}</p>
+        <p>当前的角色：{{usersInfo.role_name}}</p>
+        <p>分配新角色：
+          <el-select v-model="value" placeholder="请选择">
+           <el-option v-for="item in roleList" :key="item.id" :label="item.roleName" :value="item.id">
+           </el-option>
+          </el-select>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="usersFpqx = false">取 消</el-button>
+        <el-button type="primary" @click="determineAllocation">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -163,7 +180,13 @@ export default {
         ]
       },
       // 查询到的用户信息数据
-      editForm: {}
+      editForm: {},
+      usersFpqx: false,
+      // 用户信息
+      usersInfo: {},
+      // 角色列表
+      roleList: [],
+      value: ''
     }
   },
   created() {
@@ -269,6 +292,30 @@ export default {
             message: '已取消删除'
           })
         })
+    },
+    // 获取到所有角色信息
+    async assignRoles(usersInfo) {
+      this.usersInfo = usersInfo
+      console.log(this.usersInfo)
+      const { data: res } = await this.$http.get('roles')
+      if (res.meta.status !== 200) return this.$message.error('获取角色列表失败!')
+      this.roleList = res.data
+      console.log(this.roleList)
+      this.usersFpqx = true
+    },
+    // 点击确定按钮 分配角色
+    async determineAllocation() {
+      if (!this.value) return this.$message.error('请选择要分配的角色')
+      const { data: res } = await this.$http.put(`users/${this.usersInfo.id}/role`, { rid: this.value })
+      if (res.meta.status !== 200) {
+        return this.$message.error('更新角色失败')
+      }
+      this.$message.success('更新角色成功')
+      this.usersFpqx = false
+      this.getUsersList()
+    },
+    closeUserFpjs() {
+      this.value = ''
     }
   }
 }
