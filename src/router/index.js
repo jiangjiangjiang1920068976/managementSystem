@@ -6,12 +6,13 @@ import MainPage from '../components/mainPage.vue'
 import users from '../components/users/users.vue'
 import rights from '../components/power/rights.vue'
 import roles from '../components/power/roles.vue'
+import cate from '../components/goods/cate.vue'
 Vue.use(VueRouter)
 
 const routes = [
   { path: '/', redirect: '/login' },
   { path: '/login', component: Login },
-  { path: '/home', component: Home, redirect: '/mainPage', children: [{ path: '/mainPage', component: MainPage }, { path: '/users', component: users }, { path: '/rights', component: rights }, { path: '/roles', component: roles }] }
+  { path: '/home', component: Home, redirect: '/mainPage', children: [{ path: '/mainPage', component: MainPage }, { path: '/users', component: users }, { path: '/rights', component: rights }, { path: '/roles', component: roles }, { path: '/categories', component: cate }] }
 ]
 
 const router = new VueRouter({
