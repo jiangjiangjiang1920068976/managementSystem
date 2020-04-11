@@ -10,12 +10,13 @@ import cate from '../components/goods/cate.vue'
 import params from '../components/goods/params.vue'
 import list from '../components/goods/list.vue'
 import add from '../components/goods/add.vue'
+import orders from '../components/orders/orders.vue'
 Vue.use(VueRouter)
 
 const routes = [
   { path: '/', redirect: '/login' },
   { path: '/login', component: Login },
-  { path: '/home', component: Home, redirect: '/mainPage', children: [{ path: '/mainPage', component: MainPage }, { path: '/users', component: users }, { path: '/rights', component: rights }, { path: '/roles', component: roles }, { path: '/categories', component: cate }, { path: '/params', component: params }, { path: '/goods', component: list }, { path: '/goods/add', component: add }] }
+  { path: '/home', component: Home, redirect: '/mainPage', children: [{ path: '/mainPage', component: MainPage }, { path: '/users', component: users }, { path: '/rights', component: rights }, { path: '/roles', component: roles }, { path: '/categories', component: cate }, { path: '/params', component: params }, { path: '/goods', component: list }, { path: '/goods/add', component: add }, { path: '/orders', component: orders }] }
 ]
 
 const router = new VueRouter({
